@@ -1,0 +1,153 @@
+type PHTR struct {
+        XMLName xml.Name `xml:"PHTR"`
+        Text    string   `xml:",chardata"`
+        RBIF    struct {
+                Text string `xml:",chardata"`
+                RINM string `xml:"RINM"`
+                RICD string `xml:"RICD"`
+                FIRC string `xml:"FIRC"`
+                LEI  string `xml:"LEI"`
+                CTTN string `xml:"CTTN"`
+        } `xml:"RBIF"`
+        CATIs struct {
+                Text string `xml:",chardata"`
+                CATI []struct {
+                        Text  string `xml:",chardata"`
+                        Seqno string `xml:"seqno,attr"`
+                        CBIF  struct {
+                                Text string `xml:",chardata"`
+                                CSNM string `xml:"CSNM"` ###############
+                                CTVC string `xml:"CTVC"`
+                                CRNM string `xml:"CRNM"`
+                                CRIT string `xml:"CRIT"`
+                                ORIT string `xml:"ORIT"`
+                                CRID string `xml:"CRID"`
+                                CCIF struct {
+                                        Text  string `xml:",chardata"`
+                                        CCTLs struct {
+                                                Text string `xml:",chardata"`
+                                                CCTL []struct {
+                                                        Text  string `xml:",chardata"`
+                                                        Seqno string `xml:"seqno,attr"`
+                                                } `xml:"CCTL"`
+                                        } `xml:"CCTLs"`
+                                        CTARs struct {
+                                                Text string `xml:",chardata"`
+                                                CTAR []struct {
+                                                        Text  string `xml:",chardata"`
+                                                        Seqno string `xml:"seqno,attr"`
+                                                } `xml:"CTAR"`
+                                        } `xml:"CTARs"`
+                                        CCEIs struct {
+                                                Text string `xml:",chardata"`
+                                                CCEI []struct {
+                                                        Text  string `xml:",chardata"`
+                                                        Seqno string `xml:"seqno,attr"`
+                                                } `xml:"CCEI"`
+                                        } `xml:"CCEIs"`
+                                } `xml:"CCIF"`
+                                CTNTs struct {
+                                        Text string `xml:",chardata"`
+                                        CTNT []struct {
+                                                Text  string `xml:",chardata"`
+                                                Seqno string `xml:"seqno,attr"`
+                                        } `xml:"CTNT"`
+                                } `xml:"CTNTs"`
+                        } `xml:"CBIF"`
+                        HTDT  string `xml:"HTDT"`                      #################
+                        HTCRs struct {
+                                Text string `xml:",chardata"`
+                                HTCR []struct {
+                                        Text  string `xml:",chardata"`
+                                        Seqno string `xml:"seqno,attr"`
+                                        CRCD  string `xml:"CRCD"`    #######################
+                                        TTNM  string `xml:"TTNM"`
+                                        CCIFs struct {
+                                                Text string `xml:",chardata"`
+                                                CCIF []struct {
+                                                        Text  string `xml:",chardata"`
+                                                        Seqno string `xml:"seqno,attr"`
+                                                        CTNM  string `xml:"CTNM"`
+                                                        CITP  string `xml:"CITP"`
+                                                        OITP  string `xml:"OITP"`
+                                                        CTID  string `xml:"CTID"`
+                                                        TSDTs struct {
+                                                                Text string `xml:",chardata"`
+                                                                TSDT []struct {
+                                                                        Text  string `xml:",chardata"`
+                                                                        Seqno string `xml:"seqno,attr"`
+                                                                        FICD  string `xml:"FICD"`
+                                                                        ATIF  struct {
+                                                                                Text string `xml:",chardata"`
+                                                                                CBAT string `xml:"CBAT"`
+                                                                                CBAC string `xml:"CBAC"`
+                                                                                CABM string `xml:"CABM"`
+                                                                                CTAT string `xml:"CTAT"`
+                                                                                CTAC string `xml:"CTAC"`
+                                                                                OATM string `xml:"OATM"`
+                                                                                CPIN string `xml:"CPIN"`
+                                                                                CPBA string `xml:"CPBA"`
+                                                                                CPBN string `xml:"CPBN"`
+                                                                        } `xml:"ATIF"`
+                                                                        TBIF struct {
+                                                                                Text string `xml:",chardata"`
+                                                                                TBNM string `xml:"TBNM"`
+                                                                                TBIT string `xml:"TBIT"`
+                                                                                OITP string `xml:"OITP"`
+                                                                                TBID string `xml:"TBID"`
+                                                                                TBNT string `xml:"TBNT"`
+                                                                        } `xml:"TBIF"`
+                                                                        TSIF struct {
+                                                                                Text string `xml:",chardata"`
+                                                                                TSTM string `xml:"TSTM"`
+                                                                                TRCD string `xml:"TRCD"`
+                                                                                TICD string `xml:"TICD"`   ##############
+                                                                                CTTP string `xml:"CTTP"`
+                                                                                TSCT string `xml:"TSCT"`
+                                                                                TSDR string `xml:"TSDR"`
+                                                                                CRPP string `xml:"CRPP"`
+                                                                                CRTP string `xml:"CRTP"`
+                                                                                CRAT string `xml:"CRAT"`
+                                                                                CRMB string `xml:"CRMB"`
+                                                                                CUSD string `xml:"CUSD"`
+                                                                                TMNM string `xml:"TMNM"`
+                                                                                OCTT string `xml:"OCTT"`
+                                                                                OCEC string `xml:"OCEC"`
+                                                                                OOCT string `xml:"OOCT"`
+                                                                                BPTC string `xml:"BPTC"`
+                                                                                PMTC string `xml:"PMTC"`
+                                                                                CTIP string `xml:"CTIP"`
+                                                                        } `xml:"TSIF"`
+                                                                        TCIF struct {
+                                                                                Text string `xml:",chardata"`
+                                                                                TCNM string `xml:"TCNM"`
+                                                                                TCIT string `xml:"TCIT"`
+                                                                                OITP string `xml:"OITP"`
+                                                                                TCID string `xml:"TCID"`
+                                                                                TCAT string `xml:"TCAT"`
+                                                                                TCBA string `xml:"TCBA"`
+                                                                                TCBN string `xml:"TCBN"`
+                                                                                TCTT string `xml:"TCTT"`
+                                                                                TCTA string `xml:"TCTA"`
+                                                                                TCPN string `xml:"TCPN"`
+                                                                                TCPA string `xml:"TCPA"`
+                                                                                TPBN string `xml:"TPBN"`
+                                                                                TCIP string `xml:"TCIP"`
+                                                                        } `xml:"TCIF"`
+                                                                        ROTFs struct {
+                                                                                Text string `xml:",chardata"`
+                                                                                ROTF []struct {
+                                                                                        Text  string `xml:",chardata"`
+                                                                                        Seqno string `xml:"seqno,attr"`
+                                                                                } `xml:"ROTF"`
+                                                                        } `xml:"ROTFs"`
+                                                                } `xml:"TSDT"`
+                                                        } `xml:"TSDTs"`
+                                                } `xml:"CCIF"`
+                                        } `xml:"CCIFs"`
+                                } `xml:"HTCR"`
+                        } `xml:"HTCRs"`
+                } `xml:"CATI"`
+        } `xml:"CATIs"`
+}
+

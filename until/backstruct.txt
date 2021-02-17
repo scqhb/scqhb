@@ -1,0 +1,383 @@
+package until
+
+import (
+	"encoding/xml"
+	"fmt"
+	"github.com/go-redis/redis/v8"
+)
+
+type RBIF struct { //报告基本信息
+	Text string `xml:",chardata"`
+	RINM string `xml:"RINM"` //报告机构名称
+	RICD string `xml:"RICD"` //报告机构编码
+	FIRC string `xml:"FIRC"` //报告机构所在地区编码
+	LEI  string `xml:"LEI"`  //LEI编码
+	CTTN string `xml:"CTTN"` //交易客户总数
+}
+
+type ATIF struct {
+	Text string `xml:",chardata"`
+	CBAT string `xml:"CBAT"` //客户银行账户类型
+	CBAC string `xml:"CBAC"` //客户银行账号
+	CABM string `xml:"CABM"` //客户银行账号开户银行名称
+	CTAT string `xml:"CTAT"` //客户支付账户类型
+	CTAC string `xml:"CTAC"` //客户支付账号////////////
+	OATM string `xml:"OATM"` //客户开户时间
+	CPIN string `xml:"CPIN"` //客户所在非银行支付机构名称
+	CPBA string `xml:"CPBA"` //客户所在非银行支付机构银行账号
+	CPBN string `xml:"CPBN"` //客户所在非银行支付机构银行账号开户行名称
+}
+
+type TBIF struct {
+	Text string `xml:",chardata"`
+	TBNM string `xml:"TBNM"` //代办人姓名
+	TBIT string `xml:"TBIT"` //代办人身份证件(证明文件)类型
+	OITP string `xml:"OITP"` //代办人其他身份证件(证明文件)类型
+	TBID string `xml:"TBID"` //代办人身份证件(证明文件)号码
+	TBNT string `xml:"TBNT"` //代办人国籍
+}
+
+type TSIF struct {
+	Text string `xml:",chardata"`
+	TSTM string `xml:"TSTM"` //<TSTM>交易时间</TSTM>
+	TRCD string `xml:"TRCD"` //<TRCD>交易发生地</TRCD>
+	TICD string `xml:"TICD"` //<TICD>业务标识号</TICD>
+	CTTP string `xml:"CTTP"` //<CTTP>货币资金转移方式</CTTP>
+	TSCT string `xml:"TSCT"` //<TSCT>涉外收支交易分类与代码</TSCT>
+	TSDR string `xml:"TSDR"` //<TSDR>资金收付标志</TSDR>
+	CRPP string `xml:"CRPP"` //<CRPP>资金用途</CRPP>
+	CRTP string `xml:"CRTP"` //<CRTP>交易币种</CRTP>
+	CRAT string `xml:"CRAT"` //<CRAT>交易金额</CRAT>
+	CRMB string `xml:"CRMB"` //<CRMB>交易金额（折人民币）</CRMB>
+	CUSD string `xml:"CUSD"` //<CUSD>交易金额（折美元）</CUSD>
+	TMNM string `xml:"TMNM"` //<TMNM>交易商品名称</TMNM>
+	OCTT string `xml:"OCTT"` //<OCTT>非柜台交易方式</OCTT>
+	OCEC string `xml:"OCEC"` //<OCEC>非柜台交易方式的设备代码</OCEC>
+	OOCT string `xml:"OOCT"` //<OOCT>其他非柜台交易方式</OOCT>
+	BPTC string `xml:"BPTC"` //<BPTC>银行与非银行支付机构之间的业务交易编码</BPTC>
+	PMTC string `xml:"PMTC"` //<PMTC>非银行支付机构与商户之间的业务交易编码</PMTC>
+	CTIP string `xml:"CTIP"` //<CTIP>客户交易IP地址</CTIP>
+}
+
+type TCIF struct {
+	Text string `xml:",chardata"`
+	TCNM string `xml:"TCNM"` //<TCNM>交易对手姓名（名称）</TCNM>
+	TCIT string `xml:"TCIT"` //<TCIT>交易对手身份证件（证明文件）类型</TCIT>
+	OITP string `xml:"OITP"` //<OITP>交易对手其他身份证件（证明文件）类型</OITP>
+	TCID string `xml:"TCID"` //<TCID>交易对手身份证件（证明文件）号码</TCID>
+	TCAT string `xml:"TCAT"` //<TCAT>交易对手银行账户类型</TCAT>
+	TCBA string `xml:"TCBA"` //<TCBA>交易对手银行账号</TCBA>
+	TCBN string `xml:"TCBN"` //<TCBN>交易对手银行账号开户银行名称</TCBN>
+	TCTT string `xml:"TCTT"` //<TCTT>交易对手支付账户类型</TCTT>
+	TCTA string `xml:"TCTA"` //<TCTA>交易对手支付账号</TCTA>
+	TCPN string `xml:"TCPN"` //<TCPN>交易对手所在非银行支付机构名称</TCPN>
+	TCPA string `xml:"TCPA"` //<TCPA>交易对手所在非银行支付机构银行账号</TCPA>
+	TPBN string `xml:"TPBN"` //<TPBN>交易对手所在非银行支付机构银行账号开户银行名称</TPBN>
+	TCIP string `xml:"TCIP"` //<TCIP>交易对手的交易IP地址</TCIP>
+}
+
+type TSDT struct {
+	Text  string `xml:",chardata"`
+	Seqno string `xml:"seqno,attr"`
+	FICD  string `xml:"FICD"` //报告机构分支机构（网点）代码
+	ATIF  ATIF   `xml:"ATIF"`
+	TBIF  TBIF   `xml:"TBIF"`
+	TSIF  TSIF   `xml:"TSIF"`
+	TCIF  TCIF   `xml:"TCIF"`
+	ROTFs ROTFs  `xml:"ROTFs"`
+}
+type ROTF struct {
+	Text  string `xml:",chardata"`
+	Seqno string `xml:"seqno,attr"`
+}
+type ROTFs struct {
+	Text string `xml:",chardata"`
+	ROTF []ROTF `xml:"ROTF"`
+}
+
+type HTCR struct {
+	Text  string `xml:",chardata"`
+	Seqno string `xml:"seqno,attr"`
+	CRCD  string `xml:"CRCD"` //大额交易特征代码
+	TTNM  string `xml:"TTNM"` //交易总数
+	CCIFs CCIFs  `xml:"CCIFs"`
+}
+
+type CCIFs struct { //客户身份信息
+	Text string `xml:",chardata"`
+	CCIF []struct {
+		Text  string   `xml:",chardata"`
+		Seqno string   `xml:"seqno,attr"`
+		CTNM  string   `xml:"CTNM"` //客户名称（姓名）
+		CITP  string   `xml:"CITP"` //客户身份证件（证明文件）类型
+		OITP  string   `xml:"OITP"` //客户其他身份证件（证明文件）类型
+		CTID  string   `xml:"CTID"` //客户身份证件（证明文件）号码
+		TSDTs struct { //大额交易信息
+			Text string `xml:",chardata"`
+			TSDT []TSDT `xml:"TSDT"`
+		} `xml:"TSDTs"`
+	}
+}
+
+type CBIF struct {
+	//客户基本信息
+	Text string   `xml:",chardata"`
+	CSNM string   `xml:"CSNM"` //客户号
+	CTVC string   `xml:"CTVC"` //客户职业（行业）类别
+	CRNM string   `xml:"CRNM"` //法定代表人姓名（对公客户）
+	CRIT string   `xml:"CRIT"` //法定代表人身份证件类型（对公客户）
+	ORIT string   `xml:"ORIT"` //法定代表人其他身份证件类型（对公客户）
+	CRID string   `xml:"CRID"` //法定代表人身份证件号码（对公客户）
+	CCIF struct { //客户身份信息
+		Text  string   `xml:",chardata"`
+		CCTLs struct { //客户联系电话
+			Text string `xml:",chardata"`
+			CCTL []struct {
+				Text  string `xml:",chardata"`
+				Seqno string `xml:"seqno,attr"` //客户联系电话
+			} `xml:"CCTL"`
+		} `xml:"CCTLs"`
+		CTARs struct {
+			Text string     `xml:",chardata"`
+			CTAR []struct { //客户住址/经营地址
+				Text  string `xml:",chardata"`
+				Seqno string `xml:"seqno,attr"`
+			} `xml:"CTAR"`
+		} `xml:"CTARs"`
+		CCEIs struct {
+			Text string     `xml:",chardata"`
+			CCEI []struct { //客户其他联系方式
+				Text  string `xml:",chardata"`
+				Seqno string `xml:"seqno,attr"` //客户其他联系方式
+			} `xml:"CCEI"`
+		} `xml:"CCEIs"`
+	} `xml:"CCIF"`
+	CTNTs struct {
+		Text string     `xml:",chardata"`
+		CTNT []struct { //客户国籍
+			Text  string `xml:",chardata"`
+			Seqno string `xml:"seqno,attr"`
+		} `xml:"CTNT"`
+	} `xml:"CTNTs"`
+}
+
+type PHTR2 struct {
+	XMLName xml.Name `xml:"PHTR"`
+	Text    string   `xml:",chardata"`
+	RBIF    RBIF     `xml:"RBIF"`
+	CATIs   struct {
+		Text string     `xml:",chardata"`
+		CATI []struct { //客户和交易信息
+			Text  string `xml:",chardata"`
+			Seqno string `xml:"seqno,attr"`
+			CBIF  CBIF   `xml:"CBIF"` //客户基本信息
+			HTDT  string `xml:"HTDT"` //大额交易发生日期
+			HTCRs struct {
+				Text string `xml:",chardata"`
+				HTCR HTCR   `xml:"HTCR"`
+			} `xml:"HTCRs"`
+		} `xml:"CATI"`
+	} `xml:"CATIs"`
+}
+
+//##########################
+
+func Sc() {
+	rdb := redis.NewClient(&redis.Options{
+		//	Network:            "",
+		Addr:               "9.9.9.99:6379",
+		Dialer:             nil,
+		OnConnect:          nil,
+		Username:           "",
+		Password:           "",
+		DB:                 10,
+		MaxRetries:         0,
+		MinRetryBackoff:    0,
+		MaxRetryBackoff:    0,
+		DialTimeout:        0,
+		ReadTimeout:        0,
+		WriteTimeout:       0,
+		PoolSize:           10,
+		MinIdleConns:       0,
+		MaxConnAge:         0,
+		PoolTimeout:        0,
+		IdleTimeout:        0,
+		IdleCheckFrequency: 0,
+		TLSConfig:          nil,
+		Limiter:            nil,
+	})
+	pong, err := rdb.Ping(Ctx).Result()
+	if err != nil {
+		fmt.Println("redis ping errr", pong, err)
+	}
+
+	/*Wfile, err := os.OpenFile(xmloutput, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0660)
+	if err != nil {
+		fmt.Println("err8:", err)
+	}
+	defer Wfile.Close()
+	*/
+	/*	wbufio := bufio.NewWriter(Wfile)
+
+		wbufio.WriteString(xml.Header)
+
+	*/
+
+	////////////####################
+
+	rbif := &RBIF{
+		Text: "",
+		RINM: "报告机构F0000000000001",
+		RICD: "F0000000000001",
+		FIRC: "466561",
+		LEI:  "5QJPWT6MM6YKWV6NMQCP",
+		CTTN: "2",
+	}
+	atif := ATIF{
+		Text: "",
+		CBAT: "620001",
+		CBAC: "4665615315800453",
+		CABM: "龙江银行河北省天水市安德路支行",
+		CTAT: "620001",
+		CTAC: "4665615315800453",
+		OATM: "20170902184016",
+		CPIN: "快钱支付清算信息有限公司",
+		CPBA: "4665615315800453",
+		CPBN: "龙江银行河北省天水市安德路支行",
+	}
+
+	tbif := TBIF{
+		Text: "",
+		TBNM: "夹谷坚",
+		TBIT: "610001",
+		OITP: "610001",
+		TBID: "4665615315800453",
+		TBNT: "NOR",
+	}
+	tsif := TSIF{
+		Text: "",
+		TSTM: "20200902175016",
+		TRCD: "CCK466561",
+		TICD: "5QJPWT6MM6YKWV6NMQCPLW4N",
+		CTTP: "0203",
+		TSCT: "4665615315800453",
+		TSDR: "01",
+		CRPP: "从外部审视企业不只有一个方面的含义，它涉及三个方面",
+		CRTP: "GBP",
+		CRAT: "4665.62",
+		CRMB: "4665.62",
+		CUSD: "706.911",
+		TMNM: "@N",
+		OCTT: "12",
+		OCEC: "5QJPWT6MM6YKWV6N",
+		OOCT: "12",
+		BPTC: "5QJPWT6MM6YKWV6NMQCPLW4N",
+		PMTC: "5QJPWT6MM6YKWV6NMQCPLW4N",
+		CTIP: "199.141.68.175",
+	}
+	tcif := TCIF{
+		Text: "",
+		TCNM: "夹谷坚",
+		TCIT: "610001",
+		OITP: "610001",
+		TCID: "4665615315800453",
+		TCAT: "620001",
+		TCBA: "4665615315800453",
+		TCBN: "龙江银行河北省天水市安德路支行",
+		TCTT: "620001",
+		TCTA: "4665615315800453",
+		TCPN: "快钱支付清算信息有限公司",
+		TCPA: "4665615315800453",
+		TPBN: "龙江银行河北省天水市安德路支行",
+		TCIP: "199.141.68.175",
+	}
+
+	rotfs := ROTFs{
+		Text: "",
+		ROTF: []ROTF{{"1111", "22222"}},
+	}
+
+	tsdt := TSDT{
+		Text:  "",
+		Seqno: "1",
+		FICD:  "4665615315800453",
+		ATIF:  atif,
+		TBIF:  tbif,
+		TSIF:  tsif,
+		TCIF:  tcif,
+		ROTFs: rotfs,
+	}
+
+	htcr := HTCR{
+		Text:  "",
+		Seqno: "1",
+		CRCD:  "0504",
+		TTNM:  "100",
+		CCIFs: CCIFs{},
+	}
+
+	tstd:=TSDT{
+		Text:  "",
+		Seqno: "",
+		FICD:  "",
+		ATIF:  atif,
+		TBIF:  tbif,
+		TSIF:  tsif,
+		TCIF:  tcif,
+		ROTFs: rotfs,
+	}
+
+	//catais:=dataxml.CATIs.CATI{}
+
+	/*
+		for i := 0; i < 200; i++ {
+			ss := strconv.Itoa(rand.Intn(3500) + 1)
+			//	fmt.Println("ss:::",ss)
+			result, err := rdb.Get(Ctx, ss).Result()
+			if err != nil {
+				fmt.Println("err55:", err)
+			}
+			//fmt.Println("redis_get_value::", result)
+			split := strings.Split(result, " ")
+			//fmt.Println(split[0], split[1])
+			sname := strconv.Itoa(rand.Intn(1000000) + 4001)
+			ss_name, err := rdb.Get(Ctx, sname).Result()
+			if err != nil {
+				fmt.Println("err60:", err, sname)
+			}
+			//生成500内的数据
+			TICD := strconv.Itoa(rand.Intn(500))
+			//生成A-Z的数字
+			REDT2 := string(byte(rand.Intn(26) + 65))
+			//初始化结构体Struct_T_DHTR_TSDT_B
+			tmp := Server{ Uuidv4(), Uuidv4(), strconv.Itoa(i), split[0], split[1], ss_name, TICD, REDT2}
+			vvv.Servers = append(xxx.Servers, tmp)
+			//v.Nodedatas = append(v.Nodedatas, Stmp)
+
+		}
+		output, err := xml.MarshalIndent(dataxml, " ", " ")
+		if err != nil {
+			fmt.Printf("error7: %v\n", err)
+		}
+
+		wbufio.Write(output)
+		wbufio.Flush()
+		fmt.Println("fang fa 1", time.Since(start0))
+		//////////////////##########
+
+		fmt.Println(dataxml)*/
+
+	//fmt.Println(string(readFile))
+
+	/*
+	      vvv:=&PHTR2{}
+	      	readFile, err := ioutil.ReadFile("/home/oracle/a.xml")
+	      	 if err!=nil{
+	      	 	fmt.Println("读取文件错误",err)
+	      	 }
+	   err2 := xml.Unmarshal(readFile, vvv)
+	   	if err!=nil{
+	   		fmt.Println(err2)
+	   	}
+	   	fmt.Println( vvv)*/
+}

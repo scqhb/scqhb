@@ -1,0 +1,21 @@
+syntax = "proto3";
+option go_package = ".;singlerpc";
+package singlerpc;
+
+// The greeting service definition.
+service SingleRpcBloomService {
+  // Sends a greeting
+  rpc SingleRpc (ClientRequest) returns (ServerResponse) {}
+}
+
+// The request message containing the user's name.
+message ClientRequest {
+  string requestmess = 1;
+}
+
+// The response message containing the greetings
+message ServerResponse {
+  string responsemess = 1;
+}
+
+

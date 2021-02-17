@@ -1,0 +1,18 @@
+  syntax = "proto3";
+  option go_package = ".;chat";
+
+  package chat;
+
+  service Chat {
+  rpc BloomStream(stream Request) returns (stream Response) {}
+ }
+
+ message Request {
+    string  input = 1;
+//repeated
+ }
+
+ message Response {
+  string output = 1;
+ }
+   //   https://blog.csdn.net/d7185540/article/details/81364502

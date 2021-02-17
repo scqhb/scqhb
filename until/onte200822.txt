@@ -1,0 +1,53 @@
+func worker(id int, jobs <-chan int, results chan<- int) {
+	for j := range jobs {
+		fmt.Printf("worker:%d start jobid:%d\n", id, j)
+		time.Sleep(time.Second)
+		fmt.Printf("worker:%d end jobid:%d\n", id, j)
+		results <- j * 2
+	}
+}
+
+
+func main() {
+	jobs := make(chan int, 100)
+	results := make(chan int, 100)
+	// 开启3个goroutine
+	for w := 1; w <= 3; w++ {
+		go worker(w, jobs, results)
+	}
+	// 5个任务
+	for j := 1; j <= 5; j++ {
+		jobs <- j
+	}
+	close(jobs)
+	// 输出结果
+	for a := 1; a <= 5; a++ {
+		<-results
+	}
+}
+
+
+
+	ifxsrv:="testdb"
+	ifxdb:="test"
+	ifxuser:="informix"
+	ifxpass:="oracle"
+	conn:=fmt.Sprintf("driver={IBM INFORMIX ODBC DRIVER};server=%s;database=%s;user=%s;password=%s",
+		ifxsrv, ifxdb, ifxuser, ifxpass)
+/*	engine, err := xorm.NewEngine("odbc", conn)
+	if err!=nil{
+		fmt.Println(fmt.Println(err,engine))
+	}*/
+	open, err2 := sql.Open("odbc", conn)
+
+	if err2!=nil{
+		fmt.Println(err2,conn)
+	}
+	defer open.Close()
+ 	fmt.Println("###########")
+
+	if err:=open.Ping();err!=nil{
+		fmt.Printf("PPPP %v",err)
+	}
+
+

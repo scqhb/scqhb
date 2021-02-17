@@ -1,0 +1,29 @@
+protoc --go_out=plugins=grpc:..  bloom.proto 
+protoc --go_out=plugins=grpc:. *.proto
+
+
+
+syntax = "proto3";
+
+package mytest;
+
+option go_package = ".;mytest";
+
+message UserInfoRequest {
+    int64 uid = 1;
+}
+message UserInfoResponse {
+    string name     = 1;
+    uint32 age      = 2;
+    uint32 sex      = 3;
+    uint32 count    = 4;
+}
+ 
+message Message {
+	string type     = 1;
+	bytes  data     = 2;
+}
+ 
+service Data {
+rpc Abc(stream Message) returns (stream Message){}
+}
