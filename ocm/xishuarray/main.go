@@ -1,6 +1,7 @@
 package main
 
 import "fmt"
+
 type S0 struct {
 	row   int
 	col   int

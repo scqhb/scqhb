@@ -1,10 +1,9 @@
 package main
 
-
 import (
 	"context"
-	"github.com/go-redis/redis/v8"
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	"strconv"
 )
 
@@ -14,12 +13,11 @@ func ExampleClient() {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "9.9.9.40:6379",
 		Password: "oracle1234", // no password set
-		DB:       0,  // use default DB
+		DB:       0,            // use default DB
 	})
 
-
-	for i:=0;i<100000000;i++{
-		err := rdb.Set(ctx,strconv.Itoa(i), "value", 0).Err()
+	for i := 0; i < 100000000; i++ {
+		err := rdb.Set(ctx, strconv.Itoa(i), "value", 0).Err()
 		if err != nil {
 			panic(err)
 		}
@@ -44,7 +42,6 @@ func ExampleClient() {
 	// key2 does not exist
 }
 
-
-func main(){
+func main() {
 	ExampleClient()
 }

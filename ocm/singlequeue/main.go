@@ -9,38 +9,37 @@ import (
 //
 type Queue struct {
 	maxSize int
-	array [5]int
-	front int
-	rear int
+	array   [5]int
+	front   int
+	rear    int
 }
-func(this *Queue) AddQueue(val int)(err error){
-	if this.rear==this.maxSize-1{
+
+func (this *Queue) AddQueue(val int) (err error) {
+	if this.rear == this.maxSize-1 {
 		return errors.New("queur full")
 	}
 	this.rear++
-	this.array[this.rear]=val
+	this.array[this.rear] = val
 	return
 }
-func(this *Queue)ShowQueue(){
-	for i:=this.front+1;i<=this.rear;i++{
-		fmt.Printf("arrar[%d]=%d\t",i,this.array[i])
+func (this *Queue) ShowQueue() {
+	for i := this.front + 1; i <= this.rear; i++ {
+		fmt.Printf("arrar[%d]=%d\t", i, this.array[i])
 	}
 }
 
-func(this *Queue) GetQueue()(val int,err error){
-	if this.rear==this.front{
-		return -1,errors.New("query empty")
+func (this *Queue) GetQueue() (val int, err error) {
+	if this.rear == this.front {
+		return -1, errors.New("query empty")
 	}
 	this.front++
-	val=this.array[this.front]
-	return val,nil
-
+	val = this.array[this.front]
+	return val, nil
 
 }
 
-
-func main(){
-	queue:=&Queue{
+func main() {
+	queue := &Queue{
 		maxSize: 5,
 		array:   [5]int{},
 		front:   -1,
@@ -70,10 +69,10 @@ func main(){
 		case "get":
 			fmt.Println("get")
 			getQueue, err := queue.GetQueue()
-			if err!=nil{
+			if err != nil {
 				fmt.Println(err.Error())
-			}else {
-				fmt.Println("from queue value:",getQueue)
+			} else {
+				fmt.Println("from queue value:", getQueue)
 			}
 
 		case "show":
@@ -84,8 +83,5 @@ func main(){
 		}
 
 	}
-
-
-
 
 }

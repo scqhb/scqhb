@@ -17,7 +17,7 @@ func Work_insert_bloom(workid int, jobchandata <-chan []byte, exitchan chan<- in
 			fmt.Printf("workid: %v num:%v  time:%v\n", workid, num, time.Since(t0))
 			t0 = time.Now()
 		}
-  		hashVal := crc32.Checksum(ii, crcTable)
+		hashVal := crc32.Checksum(ii, crcTable)
 		index := int(hashVal) % 5
 		ArryChanData[index] <- ii
 

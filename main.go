@@ -43,7 +43,6 @@ func init() {
 		public.ArryChan_select[i] = make(chan []byte, 10000)
 	}
 
-
 	flag.StringVar(&fc, "fc", "default", usge)
 	flag.UintVar(&sctxtline, "sctxtline", 0, "sc txt file line size")
 	flag.IntVar(&sctxtfiles, "sctxtfiles", 0, "sc txt file number")
@@ -61,7 +60,6 @@ func init() {
 func main() {
 
 	flag.Parse()
-
 
 	//生成txt文件
 	if fc == "sctxt" && sctxtline > 100 && sctxtfiles > 0 {
@@ -114,7 +112,7 @@ func main() {
 		}
 		close(Ch8_filepath)
 		tt := time.Now()
-		func(){
+		func() {
 			for i := 0; i < public.ArrySize; i++ {
 				go func(i int) {
 					for {
@@ -124,25 +122,21 @@ func main() {
 						}
 						public.ArryBloomS[i].Add(v)
 					}
-					public.Exitchan<- struct {}{}
+					public.Exitchan <- struct{}{}
 				}(i)
 			}
 		}()
 
-
 		for i := 0; i < proc; i++ {
- 			go until.ReadFileToBloom(i,Ch8_filepath, until.Filter)
+			go until.ReadFileToBloom(i, Ch8_filepath, until.Filter)
 		}
 
-		for i:=0;i<public.ArrySize;i++{
+		for i := 0; i < public.ArrySize; i++ {
 			<-public.Exitchan
 		}
-		for i:=0;i<public.ArrySize;i++{
+		for i := 0; i < public.ArrySize; i++ {
 			close(public.ArryChanData[i])
 		}
-
-
-
 
 		fmt.Println("文本文件加载进内存bloom完成,总耗时: ", time.Since(tt))
 		fmt.Println("开始对外提供服务")

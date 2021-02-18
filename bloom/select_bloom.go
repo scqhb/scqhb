@@ -17,9 +17,9 @@ func Work_select_bloom(workid int, jobchandata <-chan []byte, exitchan chan<- in
 			t0 = time.Now()
 
 		}
-	/*	tmp := strconv.Itoa(ii)
-		hashVal := crc32.Checksum([]byte(tmp), crcTable)
-		index := int(hashVal) % 5*/
+		/*	tmp := strconv.Itoa(ii)
+			hashVal := crc32.Checksum([]byte(tmp), crcTable)
+			index := int(hashVal) % 5*/
 		if ArryBloomS[workid].Test(ii) {
 
 		} else {

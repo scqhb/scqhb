@@ -24,8 +24,8 @@ func GetUuidToFile(dirlist string, num uint) {
 	go Rand_Line(C)
 	//file name
 	////filename := fmt.Sprintf("%v/p%v-%08d.txt", dirlist, time.Now().Format("20060102"), time.Now().UnixNano())
-	tmp:=public.GetFilenum()
-	filename := fmt.Sprintf("%v/testdb.bwallcol01.%04d.csv", dirlist,tmp)
+	tmp := public.GetFilenum()
+	filename := fmt.Sprintf("%v/testdb.bwallcol01.%04d.csv", dirlist, tmp)
 	createfile, err := os.Create(filename)
 	ErrCheck(err)
 	defer createfile.Close()

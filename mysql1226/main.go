@@ -111,7 +111,6 @@ func SelectDb(user User) {
 	fmt.Println("user:%#v\n", user)
 }
 
-
 func main() {
 	/*	InitDB()
 		user := User{
@@ -124,6 +123,5 @@ func main() {
 	//InsertDB(user)
 	//DeleteUser(user)
 	//	SelectDb(user)
-
 
 }

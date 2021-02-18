@@ -17,8 +17,8 @@ import (
 var Falpro int = 0
 var lock sync.Mutex
 
-  //arry chan size
-const ArrySize  = 5
+//arry chan size
+const ArrySize = 5
 
 var ArryBloomS [ArrySize]*bf.BloomFilter
 var ArryChanData [ArrySize]chan []byte
@@ -41,8 +41,6 @@ var exitchan chan interface{} = make(chan interface{}, cpunum)
 
 func main() {
 
-
-
 	flag.Parse()
 	for i, _ := range ArryBloomS {
 		ArryBloomS[i] = bf.New(600e8, 20)
@@ -55,11 +53,11 @@ func main() {
 	for i, _ := range ArryChan_select {
 		ArryChan_select[i] = make(chan []byte, 10000)
 	}
- //time.Sleep(time.Second*100)
+	//time.Sleep(time.Second*100)
 	//var C chan []byte = make(chan []byte , 10000)
 
 	t01 := time.Now()
- 	fmt.Println("cpunum:", cpunum)
+	fmt.Println("cpunum:", cpunum)
 	//for workid := 1; workid <= cpunum; workid++ {
 	//	go Work_insert_bloom(workid, C, exitchan)
 	//}
@@ -73,29 +71,28 @@ func main() {
 				}
 				ArryBloomS[i].Add(v)
 			}
-			exitchan<- struct {}{}
+			exitchan <- struct{}{}
 		}(i)
 
 	}
 
-
-	func(){
+	func() {
 		for i := 0; i < insertnum; i++ {
 			//	C <- []byte(strconv.Itoa(i))
-			if i%1e7==0{
-				fmt.Printf("num:%v time:%v\n",i,time.Since(t01))
-				t01=time.Now()
+			if i%1e7 == 0 {
+				fmt.Printf("num:%v time:%v\n", i, time.Since(t01))
+				t01 = time.Now()
 			}
 
-			tmp:=strconv.Itoa(i)
-			stobyte:=[]byte(tmp)
+			tmp := strconv.Itoa(i)
+			stobyte := []byte(tmp)
 			hashVal := crc32.Checksum(stobyte, crcTable)
-			index:= int(hashVal) % 5
-			ArryChanData[index]<-stobyte
+			index := int(hashVal) % 5
+			ArryChanData[index] <- stobyte
 		}
 	}()
 
- 	for i:=0;i<ArrySize;i++{
+	for i := 0; i < ArrySize; i++ {
 		close(ArryChanData[i])
 
 	}
@@ -106,8 +103,6 @@ func main() {
 
 	fmt.Println(time.Since(t01))
 
-
-
 	fmt.Println("select ...#################")
 
 	T1 := time.Now()
@@ -117,18 +112,17 @@ func main() {
 	}
 
 	for i := 0; i < selectnum; i++ {
-		tmp:=strconv.Itoa(i)
+		tmp := strconv.Itoa(i)
 		//stobyte:=public.Str2bytes(tmp)
-		stobyte:=[]byte(tmp)
+		stobyte := []byte(tmp)
 		hashVal := crc32.Checksum(stobyte, crcTable)
 		index := int(hashVal) % 5
-		ArryChan_select[index]<-stobyte
+		ArryChan_select[index] <- stobyte
 	}
 
-	for i:=0;i<ArrySize;i++{
+	for i := 0; i < ArrySize; i++ {
 		close(ArryChan_select[i])
 	}
-
 
 	for i := 0; i < cpunum; i++ {
 		<-exitchan

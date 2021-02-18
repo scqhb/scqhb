@@ -8,24 +8,21 @@ import (
 
 var Map_jgbm map[int]string = make(map[int]string)
 
-const ArrySize  = 5
+const ArrySize = 5
 
 var ArryBloomS [ArrySize]*bf.BloomFilter
 var ArryChanData [ArrySize]chan []byte
 var CrcTable = crc32.MakeTable(crc32.IEEE)
 var ArryChan_select [ArrySize]chan []byte
 var Exitchan chan interface{} = make(chan interface{}, ArrySize)
-var FileNum int=0
+var FileNum int = 0
 var Glock sync.Mutex
 
-func GetFilenum()int{
+func GetFilenum() int {
 	Glock.Lock()
-	 FileNum++
-	tmp:=FileNum
+	FileNum++
+	tmp := FileNum
 	Glock.Unlock()
 	return tmp
 
 }
-
-
-

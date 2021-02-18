@@ -32,15 +32,13 @@ var Filter = bloom.New(MNconst*N_BitArrySize, K_HashNum)
 var MapXm map[int64]string = make(map[int64]string)
 var MapCity map[int64]string = make(map[int64]string)
 
-
-
 //按照行读取文件到bitmap
-func ReadFileToBloom(workid int,filepath chan string, Fbit *bloom.BloomFilter) {
-	fmt.Printf("workid:%v begin ...",workid)
- 	for {
+func ReadFileToBloom(workid int, filepath chan string, Fbit *bloom.BloomFilter) {
+	fmt.Printf("workid:%v begin ...", workid)
+	for {
 		filein, ok := <-filepath
 		if !ok {
-			fmt.Printf("workid: %v Read file complete",workid)
+			fmt.Printf("workid: %v Read file complete", workid)
 			break
 		}
 
@@ -65,18 +63,18 @@ func ReadFileToBloom(workid int,filepath chan string, Fbit *bloom.BloomFilter) {
 				}
 				count++
 				if count%1e7 == 0 {
-					fmt.Printf("workid: %v 读取数据到bit: %d 条  放入bloom耗时:%v\n",workid, count, time.Since(start0))
+					fmt.Printf("workid: %v 读取数据到bit: %d 条  放入bloom耗时:%v\n", workid, count, time.Since(start0))
 					start0 = time.Now()
 				}
 				hashVal := crc32.Checksum(line, public.CrcTable)
-				index:= int(hashVal) % public.ArrySize
-				public.ArryChanData[index]<-line
+				index := int(hashVal) % public.ArrySize
+				public.ArryChanData[index] <- line
 			}
 			fmt.Println("读取file到bit完成t0", filein)
 		}()
 	}
 
-	public.Exitchan<- struct {}{}
+	public.Exitchan <- struct{}{}
 }
 
 //查找文件中的字符是否在bitmap里面
