@@ -43,7 +43,7 @@ require (
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/genproto v0.0.0-20210217220511-c18582744cc2 // indirect
 	google.golang.org/grpc v1.35.0
-	google.golang.org/protobuf v1.25.0 // indirect
+	google.golang.org/protobuf v1.25.0
 	xorm.io/builder v0.3.7 // indirect
 	xorm.io/core v0.7.3 // indirect
 )

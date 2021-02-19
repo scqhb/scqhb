@@ -18,6 +18,7 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProdServiceClient interface {
 	GetProdStock(ctx context.Context, in *ProdRequest, opts ...grpc.CallOption) (*ProdResponse, error)
+	GetProdStocks(ctx context.Context, in *QuerySize, opts ...grpc.CallOption) (*ProdResponseList, error)
 }
 
 type prodServiceClient struct {
@@ -37,11 +38,21 @@ func (c *prodServiceClient) GetProdStock(ctx context.Context, in *ProdRequest, o
 	return out, nil
 }
 
+func (c *prodServiceClient) GetProdStocks(ctx context.Context, in *QuerySize, opts ...grpc.CallOption) (*ProdResponseList, error) {
+	out := new(ProdResponseList)
+	err := c.cc.Invoke(ctx, "/services.ProdService/GetProdStocks", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProdServiceServer is the server API for ProdService service.
 // All implementations should embed UnimplementedProdServiceServer
 // for forward compatibility
 type ProdServiceServer interface {
 	GetProdStock(context.Context, *ProdRequest) (*ProdResponse, error)
+	GetProdStocks(context.Context, *QuerySize) (*ProdResponseList, error)
 }
 
 // UnimplementedProdServiceServer should be embedded to have forward compatible implementations.
@@ -50,6 +61,9 @@ type UnimplementedProdServiceServer struct {
 
 func (*UnimplementedProdServiceServer) GetProdStock(context.Context, *ProdRequest) (*ProdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProdStock not implemented")
+}
+func (*UnimplementedProdServiceServer) GetProdStocks(context.Context, *QuerySize) (*ProdResponseList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProdStocks not implemented")
 }
 
 func RegisterProdServiceServer(s *grpc.Server, srv ProdServiceServer) {
@@ -74,6 +88,24 @@ func _ProdService_GetProdStock_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProdService_GetProdStocks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySize)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProdServiceServer).GetProdStocks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/services.ProdService/GetProdStocks",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProdServiceServer).GetProdStocks(ctx, req.(*QuerySize))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _ProdService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "services.ProdService",
 	HandlerType: (*ProdServiceServer)(nil),
@@ -81,6 +113,10 @@ var _ProdService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProdStock",
 			Handler:    _ProdService_GetProdStock_Handler,
+		},
+		{
+			MethodName: "GetProdStocks",
+			Handler:    _ProdService_GetProdStocks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

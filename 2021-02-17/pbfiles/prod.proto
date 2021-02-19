@@ -14,8 +14,19 @@ message ProdResponse{
     int32 Prod_stock=1;
 
 }
+message QuerySize{
+int32 size=1;
+}
+message ProdResponseList{
+
+  repeated  ProdResponse prodres=1;
+
+}
 
 service ProdService{
 
-rpc GetProdStock(ProdRequest) returns (ProdResponse){}
+rpc GetProdStock(ProdRequest) returns (ProdResponse){
+
+}
+rpc GetProdStocks(QuerySize) returns(ProdResponseList){}
 }
